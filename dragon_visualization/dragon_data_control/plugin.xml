@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="DragonDataControl" type="dragon_data_control.dragon_data_control.DragonDataControl" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A data control modula for dragon_visualization.
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>DragonDataControl</label>
+      <icon type="theme">input-gaming</icon>
+      <statustip>A dragon_data_control modula for dragon_visualization.</statustip>
+    </qtgui>
+  </class>
+</library>

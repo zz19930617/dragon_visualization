@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="DataRead" type="dragon_data_read.dragon_data_read.DataRead" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A data read modula for dragon_visualization.
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>DataRead</label>
+      <icon type="theme">input-gaming</icon>
+      <statustip>A data read modula for dragon_visualization.</statustip>
+    </qtgui>
+  </class>
+</library>
