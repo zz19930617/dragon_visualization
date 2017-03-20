@@ -52,7 +52,7 @@
     <string>yaw:</string>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider">
+  <widget class="QSlider" name="horizontalSlider_hip">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -65,7 +65,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider_2">
+  <widget class="QSlider" name="horizontalSlider_knee">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -78,7 +78,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider_3">
+  <widget class="QSlider" name="horizontalSlider_yaw">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -91,7 +91,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="lineEdit_hip">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -101,7 +101,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="lineEdit_knee">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -111,7 +111,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="lineEdit_yaw">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -121,7 +121,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushButton_refresh">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -134,7 +134,7 @@
     <string>Refresh</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="pushButton_go">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -147,7 +147,7 @@
     <string>GO</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="pushButton_reset">
    <property name="geometry">
     <rect>
      <x>260</x>
