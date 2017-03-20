@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="DragonButton" type="dragon_button.dragon_button.DragonButton" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A button modula for dragon_visualization.
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>DragonButton</label>
+      <icon type="theme">input-gaming</icon>
+      <statustip>A dragon_button modula for dragon_visualization.</statustip>
+    </qtgui>
+  </class>
+</library>

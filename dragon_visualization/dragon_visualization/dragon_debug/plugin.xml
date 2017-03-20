@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="DragonDebug" type="dragon_debug.dragon_debug.DragonDebug" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A debug modula for dragon_visualization.
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>DragonDebug</label>
+      <icon type="theme">input-gaming</icon>
+      <statustip>A dragon_debug modula for dragon_visualization.</statustip>
+    </qtgui>
+  </class>
+</library>
