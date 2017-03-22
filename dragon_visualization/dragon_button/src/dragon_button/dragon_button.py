@@ -2,6 +2,8 @@ import os
 import rospy
 import rospkg
 
+import threading
+
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
@@ -39,11 +41,49 @@ class DragonButton(Plugin):
         # plugin at once, these lines add number to make it easy to 
         # tell from pane to pane.
         
+        #threading
+        #threading
+        self.lock = threading.Lock()        
+        #widget
+        self._widget.pushButton_start.clicked.connect(self.pushButton_start)
+        self._widget.pushButton_rviz.clicked.connect(self.pushButton_rviz)
+        
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
         context.add_widget(self._widget)
-
+        
+    def pushButton_rviz(self):
+        def system_rviz():
+            try:
+                os.system("rosrun rviz rviz")
+            except:
+                print "open rviz failed"
+        try:
+            self.lock.acquire()
+            t_rviz = threading.Thread(target= system_rviz)
+            t_rviz.setDaemon(True)
+            t_rviz.start()
+        except:
+            print "threading rviz wrong"
+        finally:
+            self.lock.release()
+    def pushButton_start(self):
+        def system_launch():
+            try:
+                os.system("rosrun rqt_launch rqt_launch")
+            except:
+                print "open rqt_launch failed"
+        try:
+            self.lock.acquire()
+            t_launch = threading.Thread(target= system_launch)
+            t_launch.setDaemon(True)
+            t_launch.start()
+        except:
+            print "threadig launch wrong"
+        finally:
+            self.lock.release()
+                   
     def shutdown_plugin(self):
         # TODO unregister all publishers here
         pass
