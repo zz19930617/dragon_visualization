@@ -20,33 +20,26 @@
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButton_open">
        <property name="text">
         <string>OPEN</string>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="pushButton_load">
        <property name="text">
         <string>LOAD</string>
        </property>
       </widget>
      </item>
      <item row="0" column="0" colspan="5">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="lineEdit_filename"/>
      </item>
      <item row="1" column="4">
       <widget class="QPushButton" name="pushButton_4">
        <property name="text">
         <string>VIZR</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5" rowspan="2">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>START</string>
        </property>
       </widget>
      </item>
@@ -76,31 +69,19 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="6">
-      <spacer name="horizontalSpacer_6">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="0" column="5" rowspan="2">
+      <widget class="QPushButton" name="pushButton_start">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="text">
+        <string>Start</string>
        </property>
-      </spacer>
-     </item>
-     <item row="1" column="6">
-      <spacer name="horizontalSpacer_7">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
     </layout>
    </item>
@@ -142,9 +123,16 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QLabel" name="label_on">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
-        <string>ON</string>
+        <string>OFF</string>
        </property>
       </widget>
      </item>
@@ -162,7 +150,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_6">
+      <widget class="QPushButton" name="pushButton_pause">
        <property name="text">
         <string>PAUSE</string>
        </property>
