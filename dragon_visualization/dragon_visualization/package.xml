@@ -42,6 +42,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>dragon_data_read</run_depend>
   <run_depend>rqt_plot</run_depend>
+  <run_depend>rqt_plot_single</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -21,18 +21,6 @@ class DragonDataControl(Plugin):
         # Give QObjects reasonable names
         self.setObjectName('DragonDataControl')
 
-        # Process standalone plugin command-line arguments
-        from argparse import ArgumentParser
-        parser = ArgumentParser()
-        # Add argument(s) to the parser.
-        parser.add_argument("-q", "--quiet", action="store_true",
-                      dest="quiet",
-                      help="Put plugin in silent mode")
-        args, unknowns = parser.parse_known_args(context.argv())
-        if not args.quiet:
-            print 'arguments: ', args
-            print 'unknowns: ', unknowns
-
         # Create QWidget
         self._widget = QWidget()
         # Get path to UI file which should be in the "resource" folder of this package
@@ -56,8 +44,7 @@ class DragonDataControl(Plugin):
         self.update_lineEdit()
         self._if_edit = True
         self._if_slider = True
-
-        
+      
         #rospub
         self.topic_name = TOPIC_NAME
 	try:
@@ -144,22 +131,3 @@ class DragonDataControl(Plugin):
 		joint_data.data[7] = self.dragon_pointer['knee']['value']
 		
 	self._publisher_command.publish(joint_data)
-
-    def shutdown_plugin(self):
-        # TODO unregister all publishers here
-        pass
-
-    def save_settings(self, plugin_settings, instance_settings):
-        # TODO save intrinsic configuration, usually using:
-        # instance_settings.set_value(k, v)
-        pass
-
-    def restore_settings(self, plugin_settings, instance_settings):
-        # TODO restore intrinsic configuration, usually using:
-        # v = instance_settings.value(k)
-        pass
-
-    #def trigger_configuration(self):
-        # Comment in to signal that the plugin has a way to configure
-        # This will enable a setting button (gear icon) in each dock widget title bar
-        # Usually used to open a modal configuration dialog

@@ -112,11 +112,6 @@ class PlotWidget(QWidget):
                 if msg.position is not []:
                     self.curve['hip_encorder']['buff_y'].append(msg.position[0])
                     self.curve['knee_encorder']['buff_y'].append(msg.position[1])
-                #if msg.__class__._has_header:
-                    #self.curve['hip_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                    #self.curve['knee_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                    #self.buff_x.append(msg.header.stamp.to_sec() - self.start_time)
-                #else:
                     self.curve['hip_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
                     self.curve['knee_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
             except AttributeError as e:
