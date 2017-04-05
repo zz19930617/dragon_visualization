@@ -10,9 +10,11 @@ import time
 
 import threading
 from std_msgs.msg import Float64MultiArray
+from sensor_msgs.msg import JointState
 
 MAX_VALUE = 3
 TOPIC_NAME = "/debug"
+SUB_NAME = "/joint_states"
 
 LEG_NAME = ['L-F' , 'L-B' , 'R-F' , 'R-B']
 DATA_TPYE = ['Position' , 'Velocity' , 'Effort']
@@ -53,14 +55,21 @@ class DragonDataControl(Plugin):
         self.hip_data = []
         self.knee_data = []
         self.lock = threading.Lock()
+        self.sub_msg_pos = []
+        self.sub_msg_vel = []
 
         
         #rospub
         self.topic_name = TOPIC_NAME
+        self.sub_name = SUB_NAME
 	try:
 	    self._publisher_command = rospy.Publisher(self.topic_name, Float64MultiArray , queue_size=10)
 	except ROSException, e:
 	    rospy.logerr('Dragon_data_control: Error creating publisher for topic %s (%s)'%(self._pub_topic, e))
+        try:
+            self.sub_command = rospy.Subscriber(self.sub_name, JointState, self.sub_cb)
+        except ValueError, e:
+            rospy.logerr('Dragon_data_control: Error connecting topic (%s)'%e)
                     
         #widget
         self.leg_name = LEG_NAME
@@ -81,6 +90,7 @@ class DragonDataControl(Plugin):
         self._widget.pushButton_go.clicked.connect(self.pushButton_go)
         self._widget.pushButton_load.clicked.connect(self.pushButton_load)
         self._widget.pushButton_stop.clicked.connect(self.pushButton_stop)
+        self._widget.pushButton_get.clicked.connect(self.pushButton_get)
         
         
         if context.serial_number() > 1:
@@ -146,15 +156,42 @@ class DragonDataControl(Plugin):
 		
 	self._publisher_command.publish(joint_data)
 
+    def sub_cb(self,msg):
+        self.sub_msg_pos = msg.position
+        self.sub_msg_vel = msg.velocity
+
+    def pushButton_get(self):
+        current_leg = self._widget.comboBox_leg.currentText()
+        current_type = self._widget.comboBox_type.currentText()
+        if "Position" == current_type:
+            if "L-F" == current_leg:
+                self.dragon_pointer['hip']['value'] = self.sub_msg_pos[0]
+                self.dragon_pointer['knee']['value'] = self.sub_msg_pos[1]
+            elif 'L-B' == current_leg:
+                self.dragon_pointer['hip']['value'] = self.sub_msg_pos[2]
+                self.dragon_pointer['knee']['value'] = self.sub_msg_pos[3]
+            elif 'R-F' == current_leg:
+                self.dragon_pointer['hip']['value'] = self.sub_msg_pos[4]
+                self.dragon_pointer['knee']['value'] = self.sub_msg_pos[5]
+            elif 'R-B' == current_leg:
+                self.dragon_pointer['hip']['value'] = self.sub_msg_pos[6]
+                self.dragon_pointer['knee']['value'] = self.sub_msg_pos[7]
+        elif 'Velocity' == current_type:
+            if "L-F" == current_leg:
+                self.dragon_pointer['hip']['value'] = self.sub_msg_vel[0]
+                self.dragon_pointer['knee']['value'] = self.sub_msg_vel[1]
+        self.update_lineEdit()
+
     def data_pub(self):
         while(self._if_load):
             msg = Float64MultiArray()
             msg.data = [0,0,0, 0, 0, 0, 0, 0]
             for i in range(10):
-                msg.data[4] = self.hip_data[i]
-                msg.data[5] = self.knee_data[i]
-                self._publisher_command.publish(msg)
-                time.sleep(1)
+                if self._if_load:
+                    msg.data[4] = self.hip_data[i]
+                    msg.data[5] = self.knee_data[i]
+                    self._publisher_command.publish(msg)
+                    time.sleep(1)
 
     def pushButton_load(self):
         try:
