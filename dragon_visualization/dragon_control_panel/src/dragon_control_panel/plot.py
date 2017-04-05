@@ -36,16 +36,16 @@ class Plot(Plugin):
         if self._context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % self._context.serial_number())) 
     
-    #def save_settings(self, plugin_settings, instance_settings):
-        #self._data_plot.save_settings(plugin_settings, instance_settings)
+    def save_settings(self, plugin_settings, instance_settings):
+        self._data_plot.save_settings(plugin_settings, instance_settings)
         
-    #def restore_settings(self, plugin_settings, instance_settings):
-        #self._update_title()
-        #self._data_plot.restore_settings(plugin_settings, instance_settings)      
+    def restore_settings(self, plugin_settings, instance_settings):
+        self._update_title()
+        self._data_plot.restore_settings(plugin_settings, instance_settings)      
         
-    #def trigger_configuration(self):
-        #self._data_plot.doSettingsDialog()
-        #self._update_title()
+    def trigger_configuration(self):
+        self._data_plot.doSettingsDialog()
+        self._update_title()
 
     def shutdown_plugin(self):
         self._widget.clean_up_subscribers()        

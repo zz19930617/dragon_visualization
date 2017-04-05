@@ -5,7 +5,10 @@ import rospkg
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
+from python_qt_binding.QtCore import QBasicTimer
+import time
 
+import threading
 from std_msgs.msg import Float64MultiArray
 
 MAX_VALUE = 3
@@ -14,6 +17,7 @@ TOPIC_NAME = "/debug"
 LEG_NAME = ['L-F' , 'L-B' , 'R-F' , 'R-B']
 DATA_TPYE = ['Position' , 'Velocity' , 'Effort']
 JOINT_NAME = ['hip', 'knee', 'yaw']
+PATH = '/home/robot/catkin_ws/src/dragon_visualization/dragon_data_control/src/dragon_data_control/data.txt'
 class DragonDataControl(Plugin):
 
     def __init__(self, context):
@@ -44,7 +48,13 @@ class DragonDataControl(Plugin):
         self.update_lineEdit()
         self._if_edit = True
         self._if_slider = True
-      
+        self._if_load = False
+
+        self.hip_data = []
+        self.knee_data = []
+        self.lock = threading.Lock()
+
+        
         #rospub
         self.topic_name = TOPIC_NAME
 	try:
@@ -69,12 +79,16 @@ class DragonDataControl(Plugin):
         
         self._widget.pushButton_reset.clicked.connect(self.pushButton_reset)
         self._widget.pushButton_go.clicked.connect(self.pushButton_go)
+        self._widget.pushButton_load.clicked.connect(self.pushButton_load)
+        self._widget.pushButton_stop.clicked.connect(self.pushButton_stop)
         
         
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
         context.add_widget(self._widget)
+
+        #timer
         
     def slider_changed(self):
         if self._if_slider:
@@ -131,3 +145,38 @@ class DragonDataControl(Plugin):
 		joint_data.data[7] = self.dragon_pointer['knee']['value']
 		
 	self._publisher_command.publish(joint_data)
+
+    def data_pub(self):
+        while(self._if_load):
+            msg = Float64MultiArray()
+            msg.data = [0,0,0, 0, 0, 0, 0, 0]
+            for i in range(10):
+                msg.data[4] = self.hip_data[i]
+                msg.data[5] = self.knee_data[i]
+                self._publisher_command.publish(msg)
+                time.sleep(1)
+
+    def pushButton_load(self):
+        try:
+            with open(PATH,'r') as f:
+                data = f.readlines()
+                hip_data_str = data[0].split(',')
+                self.hip_data = [float(i) for i in hip_data_str]
+                knee_data_str = data[1].split(',')
+                self.knee_data = [float(i) for i in knee_data_str]
+                self._if_load = True
+        except:
+            print 'load txt wrong! '
+        try:
+            self.lock.acquire()
+            self.data_thread = threading.Thread(target=self.data_pub)
+            self.data_thread.setDaemon(True)
+            self.data_thread.start()
+        except:
+            print 'thread is wrong!'
+        finally:
+            self.lock.release()
+
+    def pushButton_stop(self):
+        self._if_load = False
+

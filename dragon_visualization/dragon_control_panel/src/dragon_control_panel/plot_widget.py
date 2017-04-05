@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 import os
 import rospkg
 import threading
 import roslib
-import json
 
 from python_qt_binding import loadUi
 from python_qt_binding.QtCore import Qt, QTimer, qWarning, Slot
 from python_qt_binding.QtGui import QIcon
-from python_qt_binding.QtWidgets import QAction, QMenu, QWidget, QFileDialog
+from python_qt_binding.QtWidgets import QAction, QMenu, QWidget
 
 from std_msgs.msg import Float64MultiArray
 from sensor_msgs.msg import JointState
@@ -18,9 +16,9 @@ import rospy
 from rqt_py_common.topic_completer import TopicCompleter
 from rqt_py_common import topic_helpers
 
-MOTOR_TOPIC_NAME = "/debug"
+MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
 ENCORDER_TOPIC_NAME = "/joint_states"
-JOINT_DATA = ['hip_motor' ,  'hip_encorder']
+JOINT_DATA = ['hip_motor' , 'knee_motor' , 'yaw_motor' , 'hip_encorder' , 'knee_encorder'  , 'yaw_encorder']
 
 LEG_NAME =['L-F' , 'L-B' , 'R-F' ,'R-B']
 JOINT_NAME = ['hip' , 'knee' ,'yaw']
@@ -37,6 +35,18 @@ class PlotWidget(QWidget):
         rp = rospkg.RosPack()
         ui_file = os.path.join(rp.get_path('dragon_control_panel') , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
+        
+        #subscribe
+        self._motor_topic_name = MOTOR_TOPIC_NAME
+        self._encorder_topic_name = ENCORDER_TOPIC_NAME
+        try:
+            self._motor_subscriber = rospy.Subscriber(self._motor_topic_name , Float64MultiArray , self._motor_cb)
+        except ValueError,e:
+            rospy.logerr('rqt_plot: error connect topic (%s)'%e)
+        try:
+            self._encorder_subscriber = rospy.Subscriber(self._encorder_topic_name , JointState , self._encorder_cb)
+        except ValueError,e:
+            rospy.logerr('rqt_plot: error connect topic (%s)'%e)
             
         #timer
         self._update_plot_timer = QTimer(self)
@@ -52,42 +62,15 @@ class PlotWidget(QWidget):
         
         self.data_plot = None
         self.error = None
-        self.data_list = []
-        self._if_pause = False
-        self._if_load = False
-        self._if_preview = False
-        self._if_start = False
-	self._if_pub = False
         
-        #rostopic
-        self.pub_topic_name = MOTOR_TOPIC_NAME
-        self.sub_topic_name = ENCORDER_TOPIC_NAME
-        try:
-            self.publish_command = rospy.Publisher(self.pub_topic_name, Float64MultiArray, queue_size = 10)
-	except ROSException, e:
-	    rospy.logerr('Dragon_control_pannel: Error creating publisher for topic %s (%s)'%(self.pub_topic_name, e))
-	try:
-	    self.subscriber = rospy.Subscriber(self.sub_topic_name, JointState, self.ros_cb)
-	except ROSException, e:
-	    rospy.logerr('Dragon_control_pannel: Error creating subscriber for topic %s (%s)'%(self.sub_topic_name, e))
-	    
-        #widget
         self.leg_name = LEG_NAME
         self.joint_name = JOINT_NAME
         for key in self.leg_name:
             self.comboBox_leg.addItem(key)
         for key in self.joint_name:
             self.comboBox_joint.addItem(key)
-        self.pushButton_open.clicked.connect(self.pB_open)
-        self.pushButton_load.clicked.connect(self.pB_load)
-        #self.label_start.setStyleSheet("background-color: rgb(128,255,0)")
-        #print dir(self.pushButton_start)
-        self.pushButton_start.setStyleSheet("background-color: rgb(128,255,0)")
-        self.label_on.setStyleSheet("background-color:rgb(255,0,0)")
-        self.pushButton_start.clicked.connect(self.pB_start)
-        self.pushButton_pause.clicked.connect(self.pB_pause)
-        self.pushButton_preview.clicked.connect(self.pB_preview)
-             
+
+        
     def switch_data_plot_widget(self , data_plot):
         self.enable_timer(enabled = False)
         
@@ -107,79 +90,47 @@ class PlotWidget(QWidget):
                 self.data_plot.add_curve(self.curve[key]['topic_name'] , self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])
         self.enable_timer(enabled= True)
         self.data_plot.redraw()
-    
-    def ros_cb(self, msg):
-	try:
-	    self.lock.acquire()
-	    try:
-		self.curve['hip_encorder']['buff_y'].append(msg.position[0])
-		self.curve['hip_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
-	    except AttributeError as e:
-		self.error = RosPlotException("invalid topic data")
-	finally:
-	    self.lock.release()
-    def pB_open(self):
-        filename,filetype = QFileDialog.getOpenFileName(self, "pick document", "/home",)
-        #print filetype
-        self.lineEdit_filename.setText(str(filename))
-    def pB_load(self):
-        filename = self.lineEdit_filename.text()
-        final_file_name = filename.split('/')[-1]
-        if ".json" in final_file_name:
-            self._if_load = True
-            self.data_plot.add_curve(self.curve['hip_motor']['topic_name'], final_file_name ,self.curve['hip_motor']['buff_x_temp'], self.curve['hip_motor']['buff_y_temp'])
-	    try:
-		with open(final_file_name,'r') as f:
-		    self.curve_data = json.load(f)
-	    except:
-		print 'open file failed!'
-            #print self.curve_data['lf']['hip']['value']
-            current_leg = self.comboBox_leg.currentText()
-            current_joint = self.comboBox_joint.currentText()
-            #print self.curve_data[current_leg][current_joint]['value']
+        
+    def _motor_cb(self , msg):
+        try:
+            self.lock.acquire()
             try:
-                self.data_list = self.curve_data[current_leg][current_joint]['value']
-            except:
-                print 'the data is wrong!'
-                 
-    def pB_start(self):
-        if 'Start' == self.pushButton_start.text():
-	    self.curve['hip_encorder']['enable'] = True
-	    self.data_plot.add_curve(self.curve['hip_encorder']['topic_name'], "encorder" ,self.curve['hip_encorder']['buff_x_temp'], self.curve['hip_encorder']['buff_y_temp'])
-            if self._if_load:
-                self.curve['hip_motor']['enable'] = True           
-            self.pushButton_start.setText('Stop')
-            self.pushButton_start.setStyleSheet("background-color: rgb(255,0,0)")
-            self.label_on.setText('ON')
-            self.label_on.setStyleSheet("background-color: rgb(128,255,0)")           
-	    self._if_pub = True
-        elif 'Stop' == self.pushButton_start.text():
-            self._if_load = False
-	    self._if_pub = False
-            self.curve['hip_motor']['enable'] = False
-	    self.curve['hip_encorder']['enable'] = False
-            self.pushButton_start.setText('Start')
-            self.pushButton_start.setStyleSheet("background-color: rgb(128,255,0)")
-            self.label_on.setText('OFF')
-            self.label_on.setStyleSheet("background-color: rgb(255,0,0)")            
-            try:
-                self.data_plot.remove_curve('hip_motor')
-		self.data_plot.remove_curve('hip_encorder')
-            except:
-                print "curve dosen't exist"
-                
-    def pB_pause(self):
-        self._if_pause = not self._if_pause
-        if "PAUSE" == self.pushButton_pause.text():
-            self.pushButton_pause.setText('RE-PLOT')
-        else:
-            self.pushButton_pause.setText('PAUSE')
+                #msg.data[1] is data of left_front_hip
+                #self.buff_y.append(msg.data[0])
+                    self.curve['hip_motor']['buff_y'].append(msg.data[0])
+                    self.curve['knee_motor']['buff_y'].append(msg.data[1])
+                    if msg.__class__._has_header:
+                        self.curve['hip_motor']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
+                        self.curve['knee_motor']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
+                        #self.buff_x.append(msg.header.stamp.to_sec() - self.start_time)
+                    else:
+                        self.curve['hip_motor']['buff_x'].append(rospy.get_time() - self.start_time)
+                        self.curve['knee_motor']['buff_x'].append(rospy.get_time() - self.start_time)
+                    #self.buff_x.append(rospy.get_time() - self.start_time)
+            except AttributeError as e:
+                self.error = RosPlotException("invalid topic data")
+        
+        finally:
+            self.lock.release()
     
-    def pB_preview(self):
-        self._if_preview = True
-	if self._if_load:
-	    self.curve['hip_motor']['enable'] = True
-
+    def _encorder_cb(self , msg):
+        try:
+            self.lock.acquire()
+            try:
+                if msg.position is not []:
+                    self.curve['hip_encorder']['buff_y'].append(msg.position[0])
+                    self.curve['knee_encorder']['buff_y'].append(msg.position[1])
+                #if msg.__class__._has_header:
+                    #self.curve['hip_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
+                    #self.curve['knee_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
+                    #self.buff_x.append(msg.header.stamp.to_sec() - self.start_time)
+                #else:
+                    self.curve['hip_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
+                    self.curve['knee_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
+            except AttributeError as e:
+                self.error = RosPlotException('invalid topic data in encorder')
+        finally:
+            self.lock.release()
     def next(self):
         #return next data of topic like [xdata] [ydata]
         if self.error:
@@ -191,6 +142,10 @@ class PlotWidget(QWidget):
                 self.curve[key]['buff_y_temp'] = self.curve[key]['buff_y']
                 self.curve[key]['buff_x'] = []
                 self.curve[key]['buff_y'] = []
+            #buff_x = self.buff_x
+            #buff_y = self.buff_y
+            #self.buff_x = []
+            #self.buff_y = []
         finally:
             self.lock.release()
         return self.curve
@@ -199,52 +154,20 @@ class PlotWidget(QWidget):
         if self.data_plot is not None:
             needs_redraw = False
             try:
-		self.next()
-                if not self._if_pause:
-                    for each_data in self.data_list:
-                        self.curve['hip_motor']['buff_x_temp'].append(rospy.get_time() - self.start_time)
-                        self.curve['hip_motor']['buff_y_temp'].append(each_data)
-                    for key in self.curve:
-                        if self.curve[key]['enable']:
-                            self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])
-                    needs_redraw = True
-                    self.curve['hip_motor']['buff_x_temp'] = []
-                    self.curve['hip_motor']['buff_y_temp'] = []
+                #data_x , data_y = self.next()
+                self.next()
+                for key in self.curve:
+                    if self.curve[key]['enable']:
+                        self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])                
+                #if data_x or data_y:
+                    #self.data_plot.update_values(self._topic_name , data_x , data_y)
+                needs_redraw = True
             except RosPlotException as e:
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
-		
-	    #publish and register the topic from robot
-	if self._if_pub:
-	    joint_data = Float64MultiArray()
-	    joint_data.data = [0, 0, 0, 0, 0, 0, 0, 0]
-	    pub_leg = self.comboBox_leg.currentText()
-	    pub_joint = self.comboBox_joint.currentText()
-	    if self._if_load:
-		for data in self.data_list:
-		    if "L-F" == pub_leg:
-			if "hip" == pub_joint:
-			    joint_data.data[0] = data
-			else:
-			    joint_data.data[1] = data
-		    elif "L-B" == pub_leg:
-			if "hip" == pub_joint:
-			    joint_data.data[2] = data
-			else:
-			    joint_data.data[3] = data
-		    elif "R-F" == pub_leg:
-			if "hip" == pub_joint:
-			    joint_data.data[4] = data
-			else:
-			    joint_data.data[5] = data
-		    elif "R-B" == pub_leg:
-			if "hip" == pub_joint:
-			    joint_data.data[6] = data
-			else:
-			    joint_data.data[7] = data
-		    self.publish_command.publish(joint_data)	
         if needs_redraw:
             self.data_plot.redraw()
-                
+    
+            
     def enable_timer(self , enabled = True):
         if enabled:
             self._update_plot_timer.start(self._redraw_interval)
@@ -252,6 +175,7 @@ class PlotWidget(QWidget):
             self._update_plot_timer.stop()
             
     def clean_up_subscribers(self):
+        self._motor_subscriber.unregister()
         for key in self.curve:
             self.data_plot.remove_curve(self.curve[key]['topic_name'])
             

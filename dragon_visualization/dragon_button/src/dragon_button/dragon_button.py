@@ -8,14 +8,25 @@ from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
 
-PATH = '/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/dragon_button/src/dragon_button/'
-
 class DragonButton(Plugin):
 
     def __init__(self, context):
         super(DragonButton, self).__init__(context)
         # Give QObjects reasonable names
         self.setObjectName('DragonButton')
+
+        # Process standalone plugin command-line arguments
+        from argparse import ArgumentParser
+        parser = ArgumentParser()
+        # Add argument(s) to the parser.
+        parser.add_argument("-q", "--quiet", action="store_true",
+                      dest="quiet",
+                      help="Put plugin in silent mode")
+        args, unknowns = parser.parse_known_args(context.argv())
+        if not args.quiet:
+            print 'arguments: ', args
+            print 'unknowns: ', unknowns
+
         # Create QWidget
         self._widget = QWidget()
         # Get path to UI file which should be in the "resource" folder of this package
@@ -31,12 +42,11 @@ class DragonButton(Plugin):
         # tell from pane to pane.
         
         #threading
+        #threading
         self.lock = threading.Lock()        
         #widget
         self._widget.pushButton_start.clicked.connect(self.pushButton_start)
-        self._widget.pushButton_start.setStyleSheet("background-color: rgb(128,255,0)")
         self._widget.pushButton_rviz.clicked.connect(self.pushButton_rviz)
-        self._widget.pushButton_ok.setStyleSheet("background-color:rgb(128, 255, 0)")
         
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
@@ -64,29 +74,31 @@ class DragonButton(Plugin):
                 os.system("rosrun rqt_launch rqt_launch")
             except:
                 print "open rqt_launch failed"
-        if "Start" == self._widget.pushButton_start.text():
-            try:
-                self.lock.acquire()
-                t_launch = threading.Thread(target= system_launch)
-                t_launch.setDaemon(True)
-                t_launch.start()
-            except:
-                print "threadig launch wrong"
-            finally:
-                self.lock.release()
-            self._widget.pushButton_start.setText('Stop')
-            self._widget.pushButton_start.setStyleSheet("background-color:rgb(255,0,0)")
-        else:
-            self._widget.pushButton_start.setText('Start')
-            self._widget.pushButton_start.setStyleSheet("background-color:rgb(128,255,0)")
-            try:
-                file_name = PATH + 'rqt.txt'
-                os.system('rm -f '+file_name)
-                os.system('ps -ef |grep rqt_launch >>'+ file_name)
-                for line in open(file_name).readlines():
-                    if 'opt/ros/indigo' in line:
-                        rqt_pid = line.split()[1]
-                        os.system('kill -9 '+ rqt_pid)
-            except:
-                print "can't catch the rqt_launch data! "
-                           
+        try:
+            self.lock.acquire()
+            t_launch = threading.Thread(target= system_launch)
+            t_launch.setDaemon(True)
+            t_launch.start()
+        except:
+            print "threadig launch wrong"
+        finally:
+            self.lock.release()
+                   
+    def shutdown_plugin(self):
+        # TODO unregister all publishers here
+        pass
+
+    def save_settings(self, plugin_settings, instance_settings):
+        # TODO save intrinsic configuration, usually using:
+        # instance_settings.set_value(k, v)
+        pass
+
+    def restore_settings(self, plugin_settings, instance_settings):
+        # TODO restore intrinsic configuration, usually using:
+        # v = instance_settings.value(k)
+        pass
+
+    #def trigger_configuration(self):
+        # Comment in to signal that the plugin has a way to configure
+        # This will enable a setting button (gear icon) in each dock widget title bar
+        # Usually used to open a modal configuration dialog
