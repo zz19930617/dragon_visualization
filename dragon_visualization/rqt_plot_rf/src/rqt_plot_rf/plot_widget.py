@@ -79,7 +79,7 @@ class PlotWidget(QWidget):
             if self.curve[key]['enable']:
             #self.data_plot.add_curve(self._topic_name , self._topic_name , data_x, data_y)
                 self.data_plot.add_curve(self.curve[key]['topic_name'] , self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])
-        self.enable_timer(enabled= True)
+        #self.enable_timer(enabled= True)
         self.data_plot.redraw()
         
     def _motor_cb(self , msg):
@@ -145,13 +145,10 @@ class PlotWidget(QWidget):
         if self.data_plot is not None:
             needs_redraw = False
             try:
-                #data_x , data_y = self.next()
                 self.next()
                 for key in self.curve:
                     if self.curve[key]['enable']:
                         self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])                
-                #if data_x or data_y:
-                    #self.data_plot.update_values(self._topic_name , data_x , data_y)
                 needs_redraw = True
             except RosPlotException as e:
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
@@ -163,6 +160,7 @@ class PlotWidget(QWidget):
         if value:
             self.curve['hip_motor']['enable'] = value
             self.curve['hip_encorder']['enable'] = value
+            self.enable_timer(enabled= True)
             self.next()
             self.data_plot.add_curve(self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['buff_x_temp'] , self.curve['hip_motor']['buff_y_temp'])           
             self.data_plot.add_curve(self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['buff_x_temp'] , self.curve['hip_encorder']['buff_y_temp'])
