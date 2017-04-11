@@ -20,28 +20,16 @@ CONTROLLER_TOPIC = "/dragon/joint_angle_command"
 ENCORDER_TOPIC = "/joint_states"
 
 #joint_index
-JOINT_INDEX = ['lfh', 'lfk','rfh', 'rfk',  'lbh', 'lbk', 'rbh', 'rbk']
+JOINT_INDEX = ['lfh', 'lfk', 'lbh', 'lbk', 'rfh', 'rfk', 'rbh', 'rbk']
 #joint_name
-JOINT_NAME = ['left_front_hip', 'left_front_knee','right_front_hip', 'right_front_knee', 'left_back_hip', 'left_back_knee',  'right_back_hip', 'right_back_knee']
+JOINT_NAME = ['left_front_hip', 'left_front_knee', 'left_back_hip', 'left_back_knee', 'right_front_hip', 'right_front_knee', 'right_back_hip', 'right_back_knee']
 
 class DataRead(Plugin):
     
     def __init__(self,context):
         super(DataRead,self).__init__(context)
         self.setObjectName('DataRead')
-        
-        # Process standalone plugin command-line arguments
-        from argparse import ArgumentParser
-        parser = ArgumentParser()
-        # Add argument(s) to the parser.
-        parser.add_argument("-q", "--quiet", action="store_true",
-                            dest="quiet",
-                            help="Put plugin in silent mode")
-        args, unknowns = parser.parse_known_args(context.argv())
-        if not args.quiet:
-            print 'arguments: ', args
-            print 'unknowns: ', unknowns
-            
+                    
         #ui
         self._widget = QWidget()
         rp = rospkg.RosPack()
@@ -58,6 +46,8 @@ class DataRead(Plugin):
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
         context.add_widget(self._widget)
+
+        self.lock = threading.Lock()
 
         '''
         structure of dragon_joint
@@ -77,7 +67,11 @@ class DataRead(Plugin):
         self.dragon_joint_pointer = {}
         for i in range(len(self.dragon_joint_index)):
             self.dragon_joint_pointer[self.dragon_joint_index[i]] = {"joint_name":self.dragon_joint_name[i] , "motor": {"position" : 0 , "velocity" : 0 , "effort" : 0} , "encorder" : {"position" : 0 , "velocity" : 0 , "effort" : 0}}
-        
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'm' + '_pos'
+            getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
+            getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")
+            
         #init rostopic to connect
         self._motor_topic = CONTROLLER_TOPIC
         self._encorder_topic = ENCORDER_TOPIC
@@ -93,38 +87,40 @@ class DataRead(Plugin):
             rospy.logerr('BHandGUI: Error connecting topic (%s)'%e)
 
         #timer
-        self._init_timers()
+        #self._init_timers()
 
     def _receive_motor_data(self, msg):
+        #self.lock.acquire()
         for i in range(len(msg.data)):
             self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'] = msg.data[i]
-
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'm' + '_pos'
+            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'])
+        #self.lock.release()
+            
     def _receive_encorder_data(self, msg):
-		temp_order_joint_name = ['lbh', 'lbk', 'lfh', 'lfk', 'rbh', 'rbk','rfh', 'rfk']
-		i = 0
-		for key in temp_order_joint_name:
-		   self.dragon_joint_pointer[key]['encorder']['position'] = msg.position[i]
-		   i = i + 1
-        #for i in range(len(msg.position)):
-            #self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'] = msg.position[i]
-
-    def _init_timers(self):
-        self._timer = QBasicTimer()
-        self._timer.start(1,self)
+        #self.lock.acquire()
+        for i in range(len(msg.position)):
+            self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'] = msg.position[i]
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
+            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'])
+        #self.lock.acquire()
+    #def _init_timers(self):
+        #self._timer = QBasicTimer()
+        #self._timer.start(1,self)
     
     def shutdown_plugin(self):
-        self._timer.stop()
+        #self._timer.stop()
         self._motor_subscriber.unregister()
         self._encorder_subscriber.unregister()
         
-    def timerEvent(self, e):
+    #def timerEvent(self, e):
         
-        for key in self.dragon_joint_pointer:
+        #for key in self.dragon_joint_pointer:
             #read motor_position_data
-            lcdNumber_name = 'lcdNumber_' + key + 'm' + '_pos'
-            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['motor']['position'])
-            getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
+            #lcdNumber_name = 'lcdNumber_' + key + 'm' + '_pos'
+            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['motor']['position'])
+            #getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
             #read encorder_position_data
-            lcdNumber_name = 'lcdNumber_' + key + 'e' + '_pos'
-            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['encorder']['position'])
-            getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")
+            #lcdNumber_name = 'lcdNumber_' + key + 'e' + '_pos'
+            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['encorder']['position'])
+            #getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")

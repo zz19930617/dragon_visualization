@@ -24,7 +24,7 @@ class RosPlotException(Exception):
     pass
 
 class PlotWidget(QWidget):
-    _redraw_interval = 40
+    _redraw_interval =100
     def __init__(self):
         super(PlotWidget , self).__init__()
         self.setObjectName('PlotWidget')
@@ -61,6 +61,10 @@ class PlotWidget(QWidget):
         self.data_plot = None
         self.error = None
         
+        self._if_click = {}
+        checkBox = ['hip','knee']
+        for key in checkBox:
+            self._if_click[key] = False
         
     def switch_data_plot_widget(self , data_plot):
         self.enable_timer(enabled = False)
@@ -79,7 +83,6 @@ class PlotWidget(QWidget):
             if self.curve[key]['enable']:
             #self.data_plot.add_curve(self._topic_name , self._topic_name , data_x, data_y)
                 self.data_plot.add_curve(self.curve[key]['topic_name'] , self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])
-        self.enable_timer(enabled= True)
         self.data_plot.redraw()
         
     def _motor_cb(self , msg):
@@ -161,31 +164,42 @@ class PlotWidget(QWidget):
     @Slot(bool)
     def on_checkBox_hip_clicked(self , value):
         if value:
+            self._if_click['hip'] = True
+            self.enable_timer(enabled= True)
             self.curve['hip_motor']['enable'] = value
             self.curve['hip_encorder']['enable'] = value
             self.next()
             self.data_plot.add_curve(self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['buff_x_temp'] , self.curve['hip_motor']['buff_y_temp'])           
             self.data_plot.add_curve(self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['buff_x_temp'] , self.curve['hip_encorder']['buff_y_temp'])
         else:
+            self._if_click['hip'] = False
             self.curve['hip_motor']['enable'] = value
             self.curve['hip_encorder']['enable'] = value
             self.data_plot.remove_curve(self.curve['hip_motor']['topic_name']) 
-            self.data_plot.remove_curve(self.curve['hip_encorder']['topic_name'])  
+            self.data_plot.remove_curve(self.curve['hip_encorder']['topic_name'])
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False)  
     
     @Slot(bool)
     def on_checkBox_knee_clicked(self , value):
         if value:
+            self._if_click['knee'] = True
+            self.enable_timer(enabled= True)
             self.curve['knee_motor']['enable'] = value
             self.curve['knee_encorder']['enable'] = value
             self.next()
             self.data_plot.add_curve(self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['buff_x_temp'] , self.curve['knee_motor']['buff_y_temp'])
             self.data_plot.add_curve(self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['buff_x_temp'] , self.curve['knee_encorder']['buff_y_temp'])
         else:
+            self._if_click['knee'] = False
             self.curve['knee_motor']['enable'] = value
             self.curve['knee_encorder']['enable'] = value
             self.data_plot.remove_curve(self.curve['knee_motor']['topic_name'])
             self.data_plot.remove_curve(self.curve['knee_encorder']['topic_name'])
-            
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False)
     def enable_timer(self , enabled = True):
         if enabled:
             self._update_plot_timer.start(self._redraw_interval)

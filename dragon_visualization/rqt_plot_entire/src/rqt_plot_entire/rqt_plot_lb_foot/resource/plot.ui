@@ -89,6 +89,20 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_auto">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>auto</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

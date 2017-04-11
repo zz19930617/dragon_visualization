@@ -19,39 +19,8 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>OPEN</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="text">
-        <string>LOAD</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="5">
-      <widget class="QLineEdit" name="lineEdit"/>
-     </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="pushButton_4">
-       <property name="text">
-        <string>VIZR</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5" rowspan="2">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>START</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <spacer name="horizontalSpacer_5">
+     <item row="0" column="9">
+      <spacer name="horizontalSpacer_8">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -64,6 +33,64 @@
       </spacer>
      </item>
      <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton_open">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>OPEN</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QPushButton" name="pushButton_load">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>LOAD</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="5">
+      <widget class="QLineEdit" name="lineEdit_filename"/>
+     </item>
+     <item row="1" column="5">
+      <widget class="QPushButton" name="pushButton_preview">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>PREVIEW</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="2">
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -76,7 +103,34 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="6">
+     <item row="0" column="7" rowspan="2">
+      <widget class="QPushButton" name="pushButton_start">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="10">
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="8">
       <spacer name="horizontalSpacer_6">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -89,8 +143,21 @@
        </property>
       </spacer>
      </item>
+     <item row="1" column="0">
+      <spacer name="horizontalSpacer_10">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item row="1" column="6">
-      <spacer name="horizontalSpacer_7">
+      <spacer name="horizontalSpacer_11">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -110,7 +177,28 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QComboBox" name="comboBox_leg"/>
+      <spacer name="horizontalSpacer_9">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_leg">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -126,7 +214,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_joint"/>
+      <widget class="QComboBox" name="comboBox_joint">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_2">
@@ -142,9 +238,16 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QPushButton" name="label_on">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
-        <string>ON</string>
+        <string>OFF</string>
        </property>
       </widget>
      </item>
@@ -162,11 +265,31 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_6">
+      <widget class="QPushButton" name="pushButton_pause">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
         <string>PAUSE</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_12">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

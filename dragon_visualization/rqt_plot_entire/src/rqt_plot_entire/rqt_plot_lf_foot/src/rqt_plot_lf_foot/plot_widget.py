@@ -24,7 +24,7 @@ class RosPlotException(Exception):
     pass
 
 class PlotWidget(QWidget):
-    _redraw_interval = 40
+    _redraw_interval = 100
     def __init__(self):
         super(PlotWidget , self).__init__()
         self.setObjectName('PlotWidget')
@@ -77,7 +77,6 @@ class PlotWidget(QWidget):
             if self.curve[key]['enable']:
             #self.data_plot.add_curve(self._topic_name , self._topic_name , data_x, data_y)
                 self.data_plot.add_curve(self.curve[key]['topic_name'] , self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'] , self.curve[key]['buff_z_temp'])
-        self.enable_timer(enabled= True)
         self.data_plot.redraw()
         
     def _motor_cb(self , msg):
@@ -132,8 +131,16 @@ class PlotWidget(QWidget):
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
         if needs_redraw:
             self.data_plot.redraw()
+
+    @Slot(bool)
+    def on_checkBox_auto_clicked(self, value):
+        if value:
+            self.enable_timer(enabled= True)
+        else:
+            self.enable_timer(enabled= False)
+
             
-    def enable_timer(self , enabled = True):
+    def enable_timer(self , enabled = False):
         if enabled:
             self._update_plot_timer.start(self._redraw_interval)
         else:
