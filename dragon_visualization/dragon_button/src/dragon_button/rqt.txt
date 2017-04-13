@@ -1,0 +1,2 @@
+zhangzhi 29559 29422  0 15:18 pts/0    00:00:00 sh -c ps -ef |grep rqt_launch >>/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/dragon_button/src/dragon_button/rqt.txt
+zhangzhi 29561 29559  0 15:18 pts/0    00:00:00 grep rqt_launch

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>422</height>
+    <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,14 @@
      <x>10</x>
      <y>10</y>
      <width>361</width>
-     <height>411</height>
+     <height>421</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="currentIndex">
     <number>0</number>
@@ -44,53 +50,53 @@
      <widget class="QLabel" name="qlabel_lf_pos">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>70</y>
-        <width>67</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_front</string>
+       <string>L-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lb_pos">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>160</y>
-        <width>67</width>
+        <width>41</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_back</string>
+       <string>L-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rf_pos">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>250</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_front</string>
+       <string>R-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rb_pos">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>340</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_back</string>
+       <string>R-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lfh_pos">
@@ -404,53 +410,53 @@
      <widget class="QLabel" name="qlabel_lf_vel">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>70</y>
-        <width>67</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_front</string>
+       <string>L-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lb_vel">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>160</y>
-        <width>67</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_back</string>
+       <string>L-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rf_vel">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>250</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_front</string>
+       <string>R-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rb_vel">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>340</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_back</string>
+       <string>R-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lfh_vel">
@@ -764,53 +770,53 @@
      <widget class="QLabel" name="qlabel_lf_vel_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>70</y>
-        <width>67</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_front</string>
+       <string>L-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lb_vel_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>160</y>
-        <width>67</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>left_back</string>
+       <string>L-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rf_vel_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>250</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_front</string>
+       <string>R-F</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_rb_vel_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>340</y>
-        <width>81</width>
+        <width>31</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>right_back</string>
+       <string>R-B</string>
       </property>
      </widget>
      <widget class="QLabel" name="qlabel_lfh_vel_2">

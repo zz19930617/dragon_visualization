@@ -34,8 +34,14 @@
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <property name="minimumSize">
@@ -45,7 +51,7 @@
        </size>
       </property>
       <attribute name="title">
-       <string>LEG</string>
+       <string>Leg</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -84,7 +90,7 @@
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>LEGS</string>
+       <string>Legs</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -94,7 +100,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>FOOT</string>
+       <string>Foot</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -133,7 +139,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>FOOTS</string>
+       <string>Foots</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>

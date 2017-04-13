@@ -19,30 +19,17 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="9">
-      <spacer name="horizontalSpacer_8">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="1" column="1">
       <widget class="QPushButton" name="pushButton_open">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>OPEN</string>
+        <string>Open</string>
        </property>
       </widget>
      </item>
@@ -50,13 +37,13 @@
       <widget class="QPushButton" name="pushButton_load">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>LOAD</string>
+        <string>Load</string>
        </property>
       </widget>
      </item>
@@ -67,13 +54,13 @@
       <widget class="QPushButton" name="pushButton_preview">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>PREVIEW</string>
+        <string>Preview</string>
        </property>
       </widget>
      </item>
@@ -107,7 +94,7 @@
       <widget class="QPushButton" name="pushButton_start">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -115,20 +102,13 @@
        <property name="text">
         <string>Start</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="10">
-      <spacer name="horizontalSpacer_7">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
+       <property name="iconSize">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>32</width>
+         <height>32</height>
         </size>
        </property>
-      </spacer>
+      </widget>
      </item>
      <item row="0" column="8">
       <spacer name="horizontalSpacer_6">
@@ -143,8 +123,8 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="0">
-      <spacer name="horizontalSpacer_10">
+     <item row="1" column="6">
+      <spacer name="horizontalSpacer_11">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -156,8 +136,8 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="6">
-      <spacer name="horizontalSpacer_11">
+     <item row="1" column="0">
+      <spacer name="horizontalSpacer_10">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -193,7 +173,7 @@
       <widget class="QComboBox" name="comboBox_leg">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -217,7 +197,7 @@
       <widget class="QComboBox" name="comboBox_joint">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -241,13 +221,13 @@
       <widget class="QPushButton" name="label_on">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>OFF</string>
+        <string>Off</string>
        </property>
       </widget>
      </item>
@@ -268,13 +248,13 @@
       <widget class="QPushButton" name="pushButton_pause">
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
+         <pointsize>11</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>PAUSE</string>
+        <string>Pause</string>
        </property>
       </widget>
      </item>

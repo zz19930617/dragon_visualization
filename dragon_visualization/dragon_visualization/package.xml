@@ -41,9 +41,8 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>dragon_data_read</run_depend>
+  <run_depend>rqt_plot</run_depend>
   <run_depend>rqt_plot_single</run_depend>
-   <run_depend>rqt_plot_rf</run_depend>
-   <run_depend>dragon_control_pannel</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
