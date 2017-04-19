@@ -12,7 +12,7 @@
       </group>
     -->
       <label>DragonControlPanel</label>
-      <icon type="theme">input-gaming</icon>
+      <icon type="theme">utilities-system-monitor</icon>
       <statustip>A plugin for visualizing numeric values in a 2D plot using different plotting backends.</statustip>
     </qtgui>
   </class>

@@ -31,7 +31,7 @@ class PlotWidget(QWidget):
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_single/src/rqt_plot_single/rqt_plot_lf', 'resource' , 'plot.ui')
+        ui_file = os.path.join('/home/robot/catkin_ws/src/dragon_visualization/rqt_plot_single/src/rqt_plot_single/rqt_plot_lf', 'resource' , 'plot.ui')
         #ui_file = os.path.join(rp.get_path('rqt_plot_lf') , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
@@ -103,7 +103,7 @@ class PlotWidget(QWidget):
             self.lock.acquire()
             try:
                 if msg.position is not []:
-                    self.curve['hip_pos_encorder']['buff_y'].append(msg.position[0])
+                    self.curve['hip_pos_encorder']['buff_y'].append(msg.position[9])
                     self.curve['hip_pos_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
 
             except AttributeError as e:

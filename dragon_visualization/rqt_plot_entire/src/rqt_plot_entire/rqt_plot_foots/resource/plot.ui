@@ -28,12 +28,6 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="checkBox_lf">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string>L-F</string>
        </property>
@@ -41,12 +35,6 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkBox_lb">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string>L-B</string>
        </property>
@@ -54,12 +42,6 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkBox_rf">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string>R-F</string>
        </property>
@@ -67,12 +49,6 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkBox_rb">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string>R-B</string>
        </property>
