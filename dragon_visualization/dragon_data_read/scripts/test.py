@@ -17,7 +17,7 @@ def talker():
         x = 1000
         while x:
             x = x -1
-            for y in range(0,8):
+            for y in range(12):
                 msg.data[y] = msg.data[y] +y+1
                 msg2.position[y] = msg2.position[y]+5*y+3
             pub.publish(msg)

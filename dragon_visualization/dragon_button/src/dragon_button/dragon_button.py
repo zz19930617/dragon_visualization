@@ -8,7 +8,7 @@ from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
 
-PATH = '/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/dragon_button/src/dragon_button/'
+#PATH = '/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/dragon_button/src/dragon_button/'
 
 class DragonButton(Plugin):
 
@@ -80,7 +80,7 @@ class DragonButton(Plugin):
             self._widget.pushButton_start.setText('Start')
             self._widget.pushButton_start.setStyleSheet("background-color:rgb(128,255,0)")
             try:
-                file_name = PATH + 'rqt.txt'
+                file_name = rospkg.RosPack().get_path('dragon_button')+ '/src/dragon_button/rqt.txt'
                 os.system('rm -f '+file_name)
                 os.system('ps -ef |grep rqt_launch >>'+ file_name)
                 for line in open(file_name).readlines():

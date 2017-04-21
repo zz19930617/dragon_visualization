@@ -18,11 +18,10 @@ import math
 #topic_name
 CONTROLLER_TOPIC = "/dragon/joint_angle_command"
 ENCORDER_TOPIC = "/joint_states"
+ELE_CUR_TOPIC = "/cur_states"
 
 #joint_index
-JOINT_INDEX = ['lfh', 'lfk','lbh', 'lbk','rfh', 'rfk','rbh', 'rbk',]
-#joint_name
-JOINT_NAME = ['left_front_hip', 'left_front_knee','left_back_hip', 'left_back_knee','right_front_hip', 'right_front_knee', 'right_back_hip', 'right_back_knee']
+JOINT_INDEX = ['lfh', 'lfk', 'lfy', 'lbh', 'lbk','lby', 'rfh', 'rfk','rfy', 'rbh', 'rbk','rby']
 
 class DataRead(Plugin):
     
@@ -63,58 +62,60 @@ class DataRead(Plugin):
         }
         '''
         self.dragon_joint_index = JOINT_INDEX
-        self.dragon_joint_name = JOINT_NAME
         self.dragon_joint_pointer = {}
         for i in range(len(self.dragon_joint_index)):
-            self.dragon_joint_pointer[self.dragon_joint_index[i]] = {"joint_name":self.dragon_joint_name[i] , "motor": {"position" : 0 , "velocity" : 0 , "effort" : 0} , "encorder" : {"position" : 0 , "velocity" : 0 , "effort" : 0}}
+            self.dragon_joint_pointer[self.dragon_joint_index[i]] = {"joint_name":self.dragon_joint_index[i] , "motor": {"position" : 0 , "velocity" : 0 , "effort" : 0} , "encorder" : {"position" : 0 , "velocity" : 0 , "effort" : 0}}
             lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'm' + '_pos'
             getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
             lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
             getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")
+        lcdNumber_name = 'lcdNumber_cur'
+        getattr(self._widget,lcdNumber_name).setStyleSheet("background-color : rgb(192,192,192)")
             
         #init rostopic to connect
         self._motor_topic = CONTROLLER_TOPIC
         self._encorder_topic = ENCORDER_TOPIC
+        self._ele_cur_topic = ELE_CUR_TOPIC
         
         #subscribe
         try:
             self._motor_subscriber = rospy.Subscriber(self._motor_topic, Float64MultiArray , self._receive_motor_data)
         except ValueError, e:
-            rospy.logerr('BHandGUI: Error connecting topic (%s)'%e)
+            rospy.logerr('dragon_data_read: Error connecting topic (%s)'%e)
         try:
             self._encorder_subscriber = rospy.Subscriber(self._encorder_topic, JointState , self._receive_encorder_data)
         except ValueError, e:
-            rospy.logerr('BHandGUI: Error connecting topic (%s)'%e)
+            rospy.logerr('dragon_data_read: Error connecting topic (%s)'%e)
+        try:
+            self.ele_cur_subscriber = rospy.Subscriber(self._ele_cur_topic, Float64MultiArray , self._receive_cur_data)
+        except ValueError, e:
+            rospy.logerr('dragon_data_read: Error connecting topic (%s)'%e)
 
         #timer
         #self._init_timers()
 
     def _receive_motor_data(self, msg):
-        temp = msg
         #self.lock.acquire()
-        #for i in range(len(msg.data)):
-            #self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'] = msg.data[i]
-            #lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'm' + '_pos'
-            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'])
+        for i in range(len(msg.data)):
+            self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'] = msg.data[i]
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'm' + '_pos'
+            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['motor']['position'])
         #self.lock.release()
             
     def _receive_encorder_data(self, msg):
         #self.lock.acquire()
-        #for i in range(len(msg.position)):
-            #self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'] = msg.position[i]
-            #lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
-            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'])
+        for i in range(len(msg.position)):
+            self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'] = msg.position[i]
+            lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
+            getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'])
         #self.lock.acquire()
     #def _init_timers(self):
         #self._timer = QBasicTimer()
         #self._timer.start(1,self)
-
-        self.dragon_joint_pointer['rfh']['encorder']['position'] = msg.position[9]
-        self.dragon_joint_pointer['rfk']['encorder']['position'] = msg.position[10]
-        lcdNumber_name = 'lcdNumber_' + 'rfh' + 'e' + '_pos'
-        getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer['rfh']['encorder']['position'])
-        lcdNumber_name = 'lcdNumber_' + 'rfk' + 'e' + '_pos'
-        getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer['rfk']['encorder']['position'])
+    def _receive_cur_data(self, msg):
+        lcdNumber_name = 'lcdNumber_cur'
+        getattr(self._widget, lcdNumber_name).display(msg.data[0])
+    
     def shutdown_plugin(self):
         #self._timer.stop()
         self._motor_subscriber.unregister()

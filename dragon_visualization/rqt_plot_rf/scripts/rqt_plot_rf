@@ -3,8 +3,8 @@
 import sys
 
 from rqt_gui.main import Main
-#from rqt_plot_rf.plot import Plot
+from rqt_plot_rf.plot import Plot
 
-#plugin = 'rqt_plot_rf.plot.Plot'
-main = Main()
-sys.exit(main.main(sys.argv , standalone="rqt_plot_rf"))
+plugin = 'rqt_plot_rf.plot.Plot'
+main = Main(filename=plugin)
+sys.exit(main.main(sys.argv , standalone=plugin))

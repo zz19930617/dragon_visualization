@@ -24,7 +24,7 @@ class RosPlotException(Exception):
     pass
 
 class PlotWidget(QWidget):
-    _redraw_interval = 100
+    _redraw_interval = 40
     def __init__(self):
         super(PlotWidget , self).__init__()
         self.setObjectName('PlotWidget')
@@ -60,12 +60,6 @@ class PlotWidget(QWidget):
         
         self.data_plot = None
         self.error = None
-
-        self._if_click = {}
-        checkBox = ['hip','knee']
-        for key in checkBox:
-            self._if_click[key] = False
-        #print self._if_click
         
         
     def switch_data_plot_widget(self , data_plot):
@@ -128,7 +122,6 @@ class PlotWidget(QWidget):
                 self.error = RosPlotException('invalid topic data in encorder')
         finally:
             self.lock.release()
-
     def next(self):
         #return next data of topic like [xdata] [ydata]
         if self.error:
@@ -140,8 +133,13 @@ class PlotWidget(QWidget):
                 self.curve[key]['buff_y_temp'] = self.curve[key]['buff_y']
                 self.curve[key]['buff_x'] = []
                 self.curve[key]['buff_y'] = []
+            #buff_x = self.buff_x
+            #buff_y = self.buff_y
+            #self.buff_x = []
+            #self.buff_y = []
         finally:
             self.lock.release()
+        return self.curve
     
     def update_plot(self):
         if self.data_plot is not None:
@@ -149,8 +147,8 @@ class PlotWidget(QWidget):
             try:
                 self.next()
                 for key in self.curve:
-                    if self.curve[key]['enable']:              
-                        self.data_plot.update_values(self.curve[key]['topic_name'],self.curve[key]['buff_x_temp'],self.curve[key]['buff_y_temp'])
+                    if self.curve[key]['enable']:
+                        self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])                
                 needs_redraw = True
             except RosPlotException as e:
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
@@ -160,7 +158,6 @@ class PlotWidget(QWidget):
     @Slot(bool)
     def on_checkBox_hip_clicked(self , value):
         if value:
-            self._if_click['hip'] = True
             self.curve['hip_motor']['enable'] = value
             self.curve['hip_encorder']['enable'] = value
             self.enable_timer(enabled= True)
@@ -168,34 +165,24 @@ class PlotWidget(QWidget):
             self.data_plot.add_curve(self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['buff_x_temp'] , self.curve['hip_motor']['buff_y_temp'])           
             self.data_plot.add_curve(self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['buff_x_temp'] , self.curve['hip_encorder']['buff_y_temp'])
         else:
-            self._if_click['hip'] = False
             self.curve['hip_motor']['enable'] = value
             self.curve['hip_encorder']['enable'] = value
             self.data_plot.remove_curve(self.curve['hip_motor']['topic_name']) 
-            self.data_plot.remove_curve(self.curve['hip_encorder']['topic_name'])
-            self.update_plot()
-            if True not in self._if_click.values():
-                self.enable_timer(enabled= False)  
+            self.data_plot.remove_curve(self.curve['hip_encorder']['topic_name'])  
     
     @Slot(bool)
     def on_checkBox_knee_clicked(self , value):
         if value:
-            self._if_click['knee'] = True
             self.curve['knee_motor']['enable'] = value
             self.curve['knee_encorder']['enable'] = value
-            self.enable_timer(enabled= True)
             self.next()
             self.data_plot.add_curve(self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['buff_x_temp'] , self.curve['knee_motor']['buff_y_temp'])
             self.data_plot.add_curve(self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['buff_x_temp'] , self.curve['knee_encorder']['buff_y_temp'])
         else:
-            self._if_click['knee'] = False
             self.curve['knee_motor']['enable'] = value
             self.curve['knee_encorder']['enable'] = value
             self.data_plot.remove_curve(self.curve['knee_motor']['topic_name'])
             self.data_plot.remove_curve(self.curve['knee_encorder']['topic_name'])
-            self.update_plot()
-            if True not in self._if_click.values():
-                self.enable_timer(enabled= False)  
             
     def enable_timer(self , enabled = True):
         if enabled:

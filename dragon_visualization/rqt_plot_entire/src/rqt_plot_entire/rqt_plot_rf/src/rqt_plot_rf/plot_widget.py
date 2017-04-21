@@ -16,8 +16,7 @@ import rospy
 from rqt_py_common.topic_completer import TopicCompleter
 from rqt_py_common import topic_helpers
 
-#MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
-MOTOR_TOPIC_NAME = "/debug"
+MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
 ENCORDER_TOPIC_NAME = "/joint_states"
 JOINT_DATA = ['hip_motor' , 'knee_motor' , 'yaw_motor' , 'hip_encorder' , 'knee_encorder'  , 'yaw_encorder']
 
@@ -32,7 +31,7 @@ class PlotWidget(QWidget):
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/robot/catkin_ws/src/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_rf', 'resource' , 'plot.ui')
+        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_rf', 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
         #subscribe
@@ -66,8 +65,6 @@ class PlotWidget(QWidget):
         checkBox = ['hip','knee']
         for key in checkBox:
             self._if_click[key] = False
-
-        self.temp_time = 0 
                
     def switch_data_plot_widget(self , data_plot):
         self.enable_timer(enabled = False)
@@ -92,11 +89,9 @@ class PlotWidget(QWidget):
         try:
             self.lock.acquire()
             try:
-                current_time = rospy.get_time()
-                self.temp_time.append(current_time)
                 #msg.data[1] is data of left_front_hip
                 #self.buff_y.append(msg.data[0])
-                self.curve['hip_motor']['buff_y'].append(msg.data[4])
+                self.curve['hip_motor']['buff_y'].append(msg.data[2])
                 self.curve['knee_motor']['buff_y'].append(msg.data[3])
                     #if msg.__class__._has_header:
                         #self.curve['hip_motor']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
@@ -116,12 +111,9 @@ class PlotWidget(QWidget):
         try:
             self.lock.acquire()
             try:
-                #if self.temp_time != 0:
-                    #time.sleep(2)
-                    #self.enable_timer(enabled= False) 
                 if msg.position is not []:
-                    self.curve['hip_encorder']['buff_y'].append(((159-msg.position[9])/57.3))
-                    self.curve['knee_encorder']['buff_y'].append(msg.position[10])
+                    self.curve['hip_encorder']['buff_y'].append(msg.position[6])
+                    self.curve['knee_encorder']['buff_y'].append(msg.position[7])
                 #if msg.__class__._has_header:
                     #self.curve['hip_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
                     #self.curve['knee_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
