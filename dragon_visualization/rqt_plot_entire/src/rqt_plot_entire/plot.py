@@ -53,6 +53,21 @@ class Plot(Plugin):
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
         context.add_widget(self._widget)
+
+    def shutdown_plugin(self):
+        # TODO unregister all publishers here
+        pass
+
+    def save_settings(self, plugin_settings, instance_settings):
+        # TODO save intrinsic configuration, usually using:
+        # instance_settings.set_value(k, v)
+        pass
+
+    def restore_settings(self, plugin_settings, instance_settings):
+        # TODO restore intrinsic configuration, usually using:
+        # v = instance_settings.value(k)
+        pass 
+        
         
     
     

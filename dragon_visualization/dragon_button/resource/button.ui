@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>284</width>
-    <height>179</height>
+    <width>377</width>
+    <height>110</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,11 +16,17 @@
   <widget class="QPushButton" name="pushButton_start">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>0</y>
-     <width>101</width>
-     <height>81</height>
+     <x>10</x>
+     <y>60</y>
+     <width>91</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Start</string>
@@ -29,24 +35,36 @@
   <widget class="QPushButton" name="pushButton_rviz">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>99</width>
-     <height>81</height>
+     <x>10</x>
+     <y>10</y>
+     <width>91</width>
+     <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
-    <string>RVIZ</string>
+    <string>Rviz</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_3">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>140</y>
+     <x>140</x>
+     <y>60</y>
      <width>99</width>
-     <height>27</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Debug</string>
@@ -55,11 +73,17 @@
   <widget class="QPushButton" name="pushButton_4">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>100</y>
+     <x>140</x>
+     <y>10</y>
      <width>99</width>
-     <height>27</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Setting</string>
@@ -68,11 +92,17 @@
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>90</y>
+     <x>270</x>
+     <y>10</y>
      <width>101</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>OK</string>

@@ -12,8 +12,8 @@ def talker():
     while not rospy.is_shutdown():
         msg = Float64MultiArray()
         msg2 = JointState()
-        msg.data = [0,0,0,0,0,0,0,0]
-        msg2.position = [0,0,0,0,0,0,0,0]
+        msg.data = [0,0,0,0,0,0,0,0,0,0,0,0]
+        msg2.position = [0,0,0,0,0,0,0,0,0,0,0,0]
         x = 1000
         while x:
             x = x -1

@@ -24,14 +24,14 @@ class RosPlotException(Exception):
     pass
 
 class PlotWidget(QWidget):
-    _redraw_interval = 40
+    _redraw_interval = 100
     def __init__(self):
         super(PlotWidget , self).__init__()
         self.setObjectName('PlotWidget')
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_foots' , 'resource' , 'plot.ui')
+        ui_file = os.path.join('/home/robot/catkin_ws/src/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_foots' , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
         #subscribe
@@ -56,6 +56,10 @@ class PlotWidget(QWidget):
         self.data_plot = None
         self.error = None
         
+        self._if_click = {}
+        checkBox = ['lf','lb', 'rf','rb']
+        for key in checkBox:
+            self._if_click[key] = False
         
     def switch_data_plot_widget(self , data_plot):
         self.enable_timer(enabled = False)
@@ -74,7 +78,6 @@ class PlotWidget(QWidget):
             if self.curve[key]['enable']:
             #self.data_plot.add_curve(self._topic_name , self._topic_name , data_x, data_y)
                 self.data_plot.add_curve(self.curve[key]['topic_name'] , self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'] , self.curve[key]['buff_z_temp'])
-        self.enable_timer(enabled= True)
         self.data_plot.redraw()
         
     def _motor_cb(self , msg):
@@ -139,45 +142,69 @@ class PlotWidget(QWidget):
     def on_checkBox_lf_clicked(self , value):
         temp_name = 'L-F'
         if value:
+            self._if_click['lf'] = True
+            self.enable_timer(enabled= True)
             self.next()
             self.curve[temp_name]['enable'] = value
             self.data_plot.add_curve(self.curve[temp_name]['topic_name'] , self.curve[temp_name]['topic_name'] , self.curve[temp_name]['buff_x_temp'] , self.curve[temp_name]['buff_y_temp'] , self.curve[temp_name]['buff_z_temp'])
         else:
+            self._if_click['lf'] = False
             self.curve[temp_name]['enable'] = value
             self.data_plot.remove_curve(self.curve[temp_name]['topic_name'])
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False) 
             
     @Slot(bool)
     def on_checkBox_lb_clicked(self , value):
         temp_name = 'L-B'
         if value:
+            self._if_click['lb'] = True
+            self.enable_timer(enabled= True)
             self.next()
             self.curve[temp_name]['enable'] = value
             self.data_plot.add_curve(self.curve[temp_name]['topic_name'] , self.curve[temp_name]['topic_name'] , self.curve[temp_name]['buff_x_temp'] , self.curve[temp_name]['buff_y_temp'] , self.curve[temp_name]['buff_z_temp'])
         else:
+            self._if_click['lb'] = False
             self.curve[temp_name]['enable'] = value
-            self.data_plot.remove_curve(self.curve[temp_name]['topic_name']) 
+            self.data_plot.remove_curve(self.curve[temp_name]['topic_name'])
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False)  
             
     @Slot(bool)
     def on_checkBox_rf_clicked(self , value):
         temp_name = 'R-F'
         if value:
+            self._if_click['rf'] = True
+            self.enable_timer(enabled= True)
             self.next()
             self.curve[temp_name]['enable'] = value
             self.data_plot.add_curve(self.curve[temp_name]['topic_name'] , self.curve[temp_name]['topic_name'] , self.curve[temp_name]['buff_x_temp'] , self.curve[temp_name]['buff_y_temp'] , self.curve[temp_name]['buff_z_temp'])
         else:
+            self._if_click['rf'] = False
             self.curve[temp_name]['enable'] = value
             self.data_plot.remove_curve(self.curve[temp_name]['topic_name'])
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False) 
             
     @Slot(bool)
     def on_checkBox_rb_clicked(self , value):
-        temp_name = 'R-F'
+        temp_name = 'R-B'
         if value:
+            self._if_click['rb'] = True
+            self.enable_timer(enabled= True)
             self.next()
             self.curve[temp_name]['enable'] = value
             self.data_plot.add_curve(self.curve[temp_name]['topic_name'] , self.curve[temp_name]['topic_name'] , self.curve[temp_name]['buff_x_temp'] , self.curve[temp_name]['buff_y_temp'] , self.curve[temp_name]['buff_z_temp'])
         else:
+            self._if_click['rb'] = False
             self.curve[temp_name]['enable'] = value
             self.data_plot.remove_curve(self.curve[temp_name]['topic_name'])
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False) 
     def clean_up_subscribers(self):
         self._motor_subscriber.unregister()
         for key in self.curve:

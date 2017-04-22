@@ -1,2 +1,4 @@
-zhangzhi 29559 29422  0 15:18 pts/0    00:00:00 sh -c ps -ef |grep rqt_launch >>/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/dragon_button/src/dragon_button/rqt.txt
-zhangzhi 29561 29559  0 15:18 pts/0    00:00:00 grep rqt_launch
+robot     3759  3730  0 09:08 pts/15   00:00:00 sh -c rosrun rqt_launch rqt_launch
+robot     3760  3759 40 09:08 pts/15   00:00:00 python /opt/ros/indigo/lib/rqt_launch/rqt_launch
+robot     3793  3730  0 09:08 pts/15   00:00:00 sh -c ps -ef |grep rqt_launch >>/home/robot/catkin_ws/src/dragon_visualization/dragon_button/src/dragon_button/rqt.txt
+robot     3795  3793  0 09:08 pts/15   00:00:00 grep rqt_launch

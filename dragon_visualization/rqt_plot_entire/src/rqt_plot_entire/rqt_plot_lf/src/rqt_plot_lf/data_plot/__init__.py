@@ -501,7 +501,7 @@ class DataPlot(QWidget):
         if numpy.isinf(y_limit[0]):
             y_limit[0] = 0.0
         if numpy.isinf(y_limit[1]):
-            y_limit[1] = 1.0
+            y_limit[1] = 3.0
 
         self.set_xlim(x_limit)
         self.set_ylim(y_limit)

@@ -14,7 +14,7 @@ class Plot(Plugin):
     
     def __init__(self , context):
         super(Plot , self).__init__(context)
-        self.setObjectName('plot')
+        #self.setObjectName('plot')
         
         self._context = context
         self._widget = PlotWidget()

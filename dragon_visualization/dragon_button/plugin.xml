@@ -13,7 +13,7 @@
       </group>
       -->
       <label>DragonButton</label>
-      <icon type="theme">input-gaming</icon>
+      <icon type="theme">utilities-system-monitor</icon>
       <statustip>A dragon_button modula for dragon_visualization.</statustip>
     </qtgui>
   </class>
