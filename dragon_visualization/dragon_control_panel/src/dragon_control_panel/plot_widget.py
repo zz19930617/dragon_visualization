@@ -149,6 +149,7 @@ class PlotWidget(QWidget):
             try:
                 self.data_list = self.curve_data[current_leg][current_joint]['value']
             except Exception,e:
+		print "data_list is wrong!"
                 print Exception, ":",e
                  
     def pB_start(self):
@@ -261,10 +262,11 @@ class PlotWidget(QWidget):
 	trajectory_data.positions = [0]
 	try:
 	    for i in range(len(curve_data['time'])):
-		trajectory_data.positions[0] = curve_data[current_leg][current_joint]['value'][i]
+		trajectory_data.positions[0] = float(curve_data[current_leg][current_joint]['value'][i])
 		trajectory_data.time_from_start.secs= curve_data['time'][i]
 		self.FollowJoint_publish.publish(trajectory_data)
 	except Exception,e:
+	    print "trajectory is wrong!"
 	    print Exception, ":", e
                
     def enable_timer(self , enabled = True):

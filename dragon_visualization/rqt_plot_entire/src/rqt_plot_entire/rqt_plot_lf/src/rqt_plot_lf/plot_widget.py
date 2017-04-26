@@ -18,7 +18,7 @@ from rqt_py_common import topic_helpers
 
 MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
 ENCORDER_TOPIC_NAME = "/joint_states"
-JOINT_DATA = ['hip_motor' , 'knee_motor' , 'yaw_motor' , 'hip_encorder' , 'knee_encorder'  , 'yaw_encorder']
+JOINT_DATA = ['hip_cmd' , 'knee_cmd' , 'yaw_cmd' , 'hip_state' , 'knee_state'  , 'yaw_state']
 
 class RosPlotException(Exception):
     pass
@@ -31,7 +31,7 @@ class PlotWidget(QWidget):
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_lf', 'resource' , 'plot.ui')
+        ui_file = os.path.join(rp.get_path('rqt_plot_entire')+'/src/rqt_plot_entire/rqt_plot_lf', 'resource' , 'plot.ui')
         #ui_file = os.path.join(rp.get_path('rqt_plot_lf') , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
@@ -63,7 +63,7 @@ class PlotWidget(QWidget):
         self.error = None
         
         self._if_click = {}
-        checkBox = ['hip','knee']
+        checkBox = ['hip','knee','yaw']
         for key in checkBox:
             self._if_click[key] = False
         
@@ -91,18 +91,12 @@ class PlotWidget(QWidget):
         try:
             self.lock.acquire()
             try:
-                #msg.data[1] is data of left_front_hip
-                #self.buff_y.append(msg.data[0])
-                    self.curve['hip_motor']['buff_y'].append(msg.data[0])
-                    self.curve['knee_motor']['buff_y'].append(msg.data[1])
-                    #if msg.__class__._has_header:
-                        #self.curve['hip_motor']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                        #self.curve['knee_motor']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                        #self.buff_x.append(msg.header.stamp.to_sec() - self.start_time)
-                    #else:
-                    self.curve['hip_motor']['buff_x'].append(rospy.get_time() - self.start_time)
-                    self.curve['knee_motor']['buff_x'].append(rospy.get_time() - self.start_time)
-                    #self.buff_x.append(rospy.get_time() - self.start_time)
+                temp_joint_cmd = ['hip_cmd', 'knee_cmd', 'yaw_cmd']
+                i = 3
+                for index in temp_joint_cmd:
+                    self.curve[index]['buff_y'].append(msg.data[i])
+                    i += 1
+                    self.curve[index]['buff_x'].append(rospy.get_time() - self.start_time)
             except AttributeError as e:
                 self.error = RosPlotException("invalid topic data")
         
@@ -113,16 +107,13 @@ class PlotWidget(QWidget):
         try:
             self.lock.acquire()
             try:
+                temp_joint_state = ['hip_state','knee_state', 'yaw_state']
+                j = 3
                 if msg.position is not []:
-                    self.curve['hip_encorder']['buff_y'].append(msg.position[2])
-                    self.curve['knee_encorder']['buff_y'].append(msg.position[3])
-                #if msg.__class__._has_header:
-                    #self.curve['hip_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                    #self.curve['knee_encorder']['buff_x'].append(msg.header.stamp.to_sec() - self.start_time)
-                    #self.buff_x.append(msg.header.stamp.to_sec() - self.start_time)
-                #else:
-                    self.curve['hip_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
-                    self.curve['knee_encorder']['buff_x'].append(rospy.get_time() - self.start_time)
+                    for index in temp_joint_state:
+                        self.curve[index]['buff_y'].append(msg.position[j])
+                        j += 1
+                        self.curve[index]['buff_x'].append(rospy.get_time() - self.start_time)
             except AttributeError as e:
                 self.error = RosPlotException('invalid topic data in encorder')
         finally:
@@ -138,10 +129,6 @@ class PlotWidget(QWidget):
                 self.curve[key]['buff_y_temp'] = self.curve[key]['buff_y']
                 self.curve[key]['buff_x'] = []
                 self.curve[key]['buff_y'] = []
-            #buff_x = self.buff_x
-            #buff_y = self.buff_y
-            #self.buff_x = []
-            #self.buff_y = []
         finally:
             self.lock.release()
         return self.curve
@@ -150,13 +137,11 @@ class PlotWidget(QWidget):
         if self.data_plot is not None:
             needs_redraw = False
             try:
-                #data_x , data_y = self.next()
                 self.next()
                 for key in self.curve:
                     if self.curve[key]['enable']:
-                        self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])                
-                #if data_x or data_y:
-                    #self.data_plot.update_values(self._topic_name , data_x , data_y)
+                        self.data_plot.update_values(self.curve[key]['topic_name'] , 
+                                                     self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'])                
                 needs_redraw = True
             except RosPlotException as e:
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
@@ -165,43 +150,62 @@ class PlotWidget(QWidget):
     
     @Slot(bool)
     def on_checkBox_hip_clicked(self , value):
+        temp_click_name = ['hip_cmd', 'hip_state']
         if value:
             self._if_click['hip'] = True
             self.enable_timer(enabled= True)
-            self.curve['hip_motor']['enable'] = value
-            self.curve['hip_encorder']['enable'] = value
-            self.next()
-            self.data_plot.add_curve(self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['topic_name'] , self.curve['hip_motor']['buff_x_temp'] , self.curve['hip_motor']['buff_y_temp'])           
-            self.data_plot.add_curve(self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['topic_name'] , self.curve['hip_encorder']['buff_x_temp'] , self.curve['hip_encorder']['buff_y_temp'])
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.next()
+                self.data_plot.add_curve(self.curve[index]['topic_name'], self.curve[index]['topic_name'], 
+                                         self.curve[index]['buff_x_temp'], self.curve[index]['buff_y_temp'])
         else:
             self._if_click['hip'] = False
-            self.curve['hip_motor']['enable'] = value
-            self.curve['hip_encorder']['enable'] = value
-            self.data_plot.remove_curve(self.curve['hip_motor']['topic_name']) 
-            self.data_plot.remove_curve(self.curve['hip_encorder']['topic_name'])  
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.data_plot.remove_curve(self.curve[index]['topic_name']) 
             self.update_plot()
             if True not in self._if_click.values():
                 self.enable_timer(enabled= False)  
     @Slot(bool)
     def on_checkBox_knee_clicked(self , value):
+        temp_click_name = ['knee_cmd', 'knee_state']
         if value:
             self._if_click['knee'] = True
             self.enable_timer(enabled= True)
-            self.curve['knee_motor']['enable'] = value
-            self.curve['knee_encorder']['enable'] = value
-            self.next()
-            self.data_plot.add_curve(self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['topic_name'] , self.curve['knee_motor']['buff_x_temp'] , self.curve['knee_motor']['buff_y_temp'])
-            self.data_plot.add_curve(self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['topic_name'] , self.curve['knee_encorder']['buff_x_temp'] , self.curve['knee_encorder']['buff_y_temp'])
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.next()
+                self.data_plot.add_curve(self.curve[index]['topic_name'], self.curve[index]['topic_name'], 
+                                         self.curve[index]['buff_x_temp'], self.curve[index]['buff_y_temp'])
         else:
             self._if_click['knee'] = False
-            self.curve['knee_motor']['enable'] = value
-            self.curve['knee_encorder']['enable'] = value
-            self.data_plot.remove_curve(self.curve['knee_motor']['topic_name'])
-            self.data_plot.remove_curve(self.curve['knee_encorder']['topic_name'])
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.data_plot.remove_curve(self.curve[index]['topic_name']) 
             self.update_plot()
             if True not in self._if_click.values():
-                self.enable_timer(enabled= False)
-            
+                self.enable_timer(enabled= False)  
+    
+    @Slot(bool)
+    def on_checkBox_yaw_clicked(self , value):
+        temp_click_name = ['yaw_cmd', 'yaw_state']
+        if value:
+            self._if_click['yaw'] = True
+            self.enable_timer(enabled= True)
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.next()
+                self.data_plot.add_curve(self.curve[index]['topic_name'], self.curve[index]['topic_name'], 
+                                         self.curve[index]['buff_x_temp'], self.curve[index]['buff_y_temp'])
+        else:
+            self._if_click['yaw'] = False
+            for index in temp_click_name:
+                self.curve[index]['enable'] = value
+                self.data_plot.remove_curve(self.curve[index]['topic_name']) 
+            self.update_plot()
+            if True not in self._if_click.values():
+                self.enable_timer(enabled= False)  
     def enable_timer(self , enabled = True):
         if enabled:
             self._update_plot_timer.start(self._redraw_interval)

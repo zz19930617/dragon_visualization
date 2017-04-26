@@ -21,7 +21,8 @@ ENCORDER_TOPIC = "/joint_states"
 ELE_CUR_TOPIC = "/cur_states"
 
 #joint_index
-JOINT_INDEX = ['lfh', 'lfk', 'lfy', 'lbh', 'lbk','lby', 'rfh', 'rfk','rfy', 'rbh', 'rbk','rby']
+JOINT_INDEX = ['lbh', 'lbk','lby', 'lfh', 'lfk', 'lfy', 'rbh', 'rbk','rby', 'rfh', 'rfk','rfy']
+CUR_INDEX = ['lf_cur', 'lb_cur', 'rf_cur', 'rb_cur']
 
 class DataRead(Plugin):
     
@@ -62,6 +63,7 @@ class DataRead(Plugin):
         }
         '''
         self.dragon_joint_index = JOINT_INDEX
+        self.cur_index = CUR_INDEX
         self.dragon_joint_pointer = {}
         for i in range(len(self.dragon_joint_index)):
             self.dragon_joint_pointer[self.dragon_joint_index[i]] = {"joint_name":self.dragon_joint_index[i] , "motor": {"position" : 0 , "velocity" : 0 , "effort" : 0} , "encorder" : {"position" : 0 , "velocity" : 0 , "effort" : 0}}
@@ -69,9 +71,9 @@ class DataRead(Plugin):
             getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
             lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
             getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")
-        lcdNumber_name = 'lcdNumber_cur'
-        getattr(self._widget,lcdNumber_name).setStyleSheet("background-color : rgb(192,192,192)")
-            
+        for i in range(len(self.cur_index)):
+            lcdNumber_name = 'lcdNumber_' + self.cur_index[i]
+            getattr(self._widget,lcdNumber_name).setStyleSheet("background-color : rgb(192,192,192)")            
         #init rostopic to connect
         self._motor_topic = CONTROLLER_TOPIC
         self._encorder_topic = ENCORDER_TOPIC
@@ -108,27 +110,15 @@ class DataRead(Plugin):
             self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'] = msg.position[i]
             lcdNumber_name = 'lcdNumber_' + self.dragon_joint_index[i] + 'e' + '_pos'
             getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[self.dragon_joint_index[i]]['encorder']['position'])
-        #self.lock.acquire()
-    #def _init_timers(self):
-        #self._timer = QBasicTimer()
-        #self._timer.start(1,self)
+
     def _receive_cur_data(self, msg):
-        lcdNumber_name = 'lcdNumber_cur'
-        getattr(self._widget, lcdNumber_name).display(msg.data[0])
+        for i in range(len(self.cur_index)):
+            lcdNumber_name = 'lcdNumber_' + self.cur_index[i]
+            getattr(self._widget, lcdNumber_name).display(msg.data[i])
     
     def shutdown_plugin(self):
         #self._timer.stop()
         self._motor_subscriber.unregister()
         self._encorder_subscriber.unregister()
         
-    #def timerEvent(self, e):
-        
-        #for key in self.dragon_joint_pointer:
-            #read motor_position_data
-            #lcdNumber_name = 'lcdNumber_' + key + 'm' + '_pos'
-            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['motor']['position'])
-            #getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(176,196,222)")
-            #read encorder_position_data
-            #lcdNumber_name = 'lcdNumber_' + key + 'e' + '_pos'
-            #getattr(self._widget,lcdNumber_name).display(self.dragon_joint_pointer[key]['encorder']['position'])
-            #getattr(self._widget,lcdNumber_name).setStyleSheet("background-color: rgb(255,182,193)")
+

@@ -31,7 +31,7 @@ class PlotWidget(QWidget):
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_lb_foot' , 'resource' , 'plot.ui')
+        ui_file = os.path.join(rp.get_path('rqt_plot_entire')+'/src/rqt_plot_entire/rqt_plot_lb_foot' , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
         #subscribe

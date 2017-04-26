@@ -31,7 +31,7 @@ class PlotWidget(QWidget):
         
         #ui
         rp = rospkg.RosPack()
-        ui_file = os.path.join('/home/zhangzhi/catkin_ws/src/dragon_robot/dragon_visualization/rqt_plot_entire/src/rqt_plot_entire/rqt_plot_foots' , 'resource' , 'plot.ui')
+        ui_file = os.path.join(rp.get_path('rqt_plot_entire')+'/src/rqt_plot_entire/rqt_plot_foots' , 'resource' , 'plot.ui')
         loadUi(ui_file , self)
         
         #subscribe
@@ -108,10 +108,6 @@ class PlotWidget(QWidget):
                 self.curve[key]['buff_x'] = []
                 self.curve[key]['buff_y'] = []
                 self.curve[key]['buff_z'] = []
-            #buff_x = self.buff_x
-            #buff_y = self.buff_y
-            #self.buff_x = []
-            #self.buff_y = []
         finally:
             self.lock.release()
         return self.curve
@@ -120,13 +116,11 @@ class PlotWidget(QWidget):
         if self.data_plot is not None:
             needs_redraw = False
             try:
-                #data_x , data_y = self.next()
                 self.next()
                 for key in self.curve:
                     if self.curve[key]['enable']:
-                        self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , self.curve[key]['buff_y_temp'] , self.curve[key]['buff_z_temp'])                
-                #if data_x or data_y:
-                    #self.data_plot.update_values(self._topic_name , data_x , data_y)
+                        self.data_plot.update_values(self.curve[key]['topic_name'] , self.curve[key]['buff_x_temp'] , 
+                                                     self.curve[key]['buff_y_temp'] , self.curve[key]['buff_z_temp'])                
                 needs_redraw = True
             except RosPlotException as e:
                 qWarning('PlotWidget : update_plot(): error in rosplot %s '%e)
