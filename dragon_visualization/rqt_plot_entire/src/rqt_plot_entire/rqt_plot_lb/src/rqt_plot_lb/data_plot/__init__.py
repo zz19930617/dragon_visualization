@@ -444,7 +444,9 @@ class DataPlot(QWidget):
                     x_limit[1] = max(x_limit[1], curve['x'].max())
 
             # set lower limit based on width
-            x_limit[0] = x_limit[1] - x_width
+            #x_limit[0] = x_limit[1] - x_width
+            if x_width > 50:
+                x_limit[0] += 50
         else:
             # don't modify limit, or get it from plot
             x_limit = self.get_xlim()

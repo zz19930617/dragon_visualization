@@ -16,7 +16,8 @@ import rospy
 from rqt_py_common.topic_completer import TopicCompleter
 from rqt_py_common import topic_helpers
 
-MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
+#MOTOR_TOPIC_NAME = "/dragon/joint_angle_command"
+MOTOR_TOPIC_NAME = "/debug"
 ENCORDER_TOPIC_NAME = "/joint_states"
 JOINT_DATA = ['hip_cmd' , 'knee_cmd' , 'yaw_cmd' , 'hip_state' , 'knee_state'  , 'yaw_state']
 
@@ -111,7 +112,7 @@ class PlotWidget(QWidget):
                 j = 9
                 if msg.position is not []:
                     for index in temp_joint_state:
-                        self.curve[index]['buff_y'].append(msg.position[j])
+                        self.curve[index]['buff_y'].append((159-msg.position[j])/57.3)
                         j += 1
                         self.curve[index]['buff_x'].append(rospy.get_time() - self.start_time)
             except AttributeError as e:
